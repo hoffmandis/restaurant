@@ -1,0 +1,13 @@
+<h2><%=@review.title%></h2>
+
+<p>
+Posted by: <%=@review.poster%> on <%=@review.date%>
+</p>
+
+<p>
+<b>Review</b><br/>
+<%=@review.article%>
+</p>
+
+<%= link_to 'Edit Review', edit_review_path(@review)%>
+<%=link_to 'Back To Main Menu', reviews_path%>
