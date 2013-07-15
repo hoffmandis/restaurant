@@ -11,3 +11,21 @@ Posted by: <%=@review.poster%> on <%=@review.date%>
 
 <%= link_to 'Edit Review', edit_review_path(@review)%>
 <%=link_to 'Back To Main Menu', reviews_path%>
+
+<p>
+<h2>Comments:</h2>
+<% for comment in @review.comments.reverse %>
+	posted by: <%= comment.poster %><br/>
+	on: <%= comment.date %><br/>
+	<%= comment.comment %><br/><br/>
+<%end%>
+</p>
+<hr>
+<h4>Submit New Comment:</h4><br/>
+<%= form_tag :action => 'comment', :id => @review do %>
+	<strong>Poster:</strong><%= text_field "comment", "poster" %><br/><br/>
+	<strong>Date:</strong><%= datetime_select "comment", "date" %><br/><br/>
+	<strong>Comment:</strong><br/>
+	<%= text_area "comment", "comment", :rows => 5 %><br/>
+	<%= submit_tag "Comment" %>
+	<%end%>

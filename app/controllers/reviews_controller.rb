@@ -2,7 +2,7 @@ class ReviewsController < ApplicationController
   # GET /reviews
   # GET /reviews.json
   def index
-    @reviews = Review.all
+    @reviews = Review.order('id desc').limit(5)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -20,6 +20,11 @@ class ReviewsController < ApplicationController
       format.json { render json: @review }
     end
   end
+
+  def comment
+        Review.find(params[:id]).comments.create(params[:comment])
+        redirect_to :action => "show", :id => params[:id]
+    end 
 
   # GET /reviews/new
   # GET /reviews/new.json
@@ -80,4 +85,6 @@ class ReviewsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
 end
