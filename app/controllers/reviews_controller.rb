@@ -86,5 +86,12 @@ class ReviewsController < ApplicationController
     end
   end
 
+  # Search method
+  def search
+    pattern=params[:searchFor] #retrieves value from form, params var contains data passed from view to conroller
+    pattern= "%" + pattern + "%"
+    @reviews=Review.where("title like ?", pattern)
+  end
+
 
 end
