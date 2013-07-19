@@ -29,11 +29,15 @@ class ReviewsController < ApplicationController
   # GET /reviews/new
   # GET /reviews/new.json
   def new
+    if (session[:user_id])
     @review = Review.new
-
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @review }
+    end
+  else
+    flash[:notice] = "Please log in to post!"
+    redirect_to '/reviews'
     end
   end
 
@@ -90,8 +94,43 @@ class ReviewsController < ApplicationController
   def search
     pattern=params[:searchFor] #retrieves value from form, params var contains data passed from view to conroller
     pattern= "%" + pattern + "%"
-    @reviews=Review.where("title like ?", pattern)
+    # @reviews=Review.where("title like ?", pattern)
+    #@reviews=Review.find_by_sql ["SELECT * FROM reviews WHERE title LIKE ? OR article LIKE ?", pattern, pattern]
+    @reviews=Review.where("title like ? OR article LIKE ?", pattern, pattern)
   end
+
+# Add a new user from form
+def newuser
+  respond_to do |format|
+    user=User.new
+    user.userid = params[:userid]
+    user.password = params[:password]
+    user.fullname = params[:fullname]
+    user.email = params[:email]
+
+    if user.save
+      session[:user_id] = user.userid
+      flash[:notice] = 'New user was successfully created.'
+    else
+      flash[:notice] = 'Sorry, user ID already exists.  Please pick another.'
+    end
+    format.html {redirect_to '/reviews'}
+  end
+end
+
+def validate
+
+  respond_to do |format|
+    user = User.authenticate(params[:userid], params[:password])
+    if user
+      session[:user_id] = user.userid
+      flash[:notice]= 'User successfully logged in'
+    else
+      flash[:notice] = 'Invalid user/password - please try again'
+    end
+    format.html {redirect_to '/reviews'}
+  end
+end
 
 
 end
