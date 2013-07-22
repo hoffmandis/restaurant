@@ -22,12 +22,19 @@ class ReviewsController < ApplicationController
   end
 
   def comment
+    if (session[:user_id])
         Review.find(params[:id]).comments.create(params[:comment])
         redirect_to :action => "show", :id => params[:id]
-    end 
+    else
+      flash[:notice] = "Please log in to post a comment!"
+      redirect_to :action => "show", :id => params[:id]
+    end
+  end 
+
 
   # GET /reviews/new
   # GET /reviews/new.json
+  # Checks for session user_id before allowing to post
   def new
     if (session[:user_id])
     @review = Review.new
@@ -40,6 +47,7 @@ class ReviewsController < ApplicationController
     redirect_to '/reviews'
     end
   end
+
 
   # GET /reviews/1/edit
   def edit
